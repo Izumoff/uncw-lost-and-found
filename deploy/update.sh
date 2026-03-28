@@ -18,17 +18,17 @@ systemctl stop lost-n-found
 
 find "$RUNTIME_DIR" -mindepth 1 -maxdepth 1 ! -name 'uwsgi.ini' ! -name 'Lost_n_Found' -exec rm -rf {} +
 
-find "$RUNTIME_DIR/Lost_n_Found" -mindepth 1 -maxdepth 1 ! -name 'secrets.py' -exec rm -rf {} +
-
 cp "$REPO_DIR/manage.py" "$RUNTIME_DIR/"
 cp "$REPO_DIR/unix_requirements.txt" "$RUNTIME_DIR/"
 cp -r "$REPO_DIR/app" "$RUNTIME_DIR/"
-cp "$REPO_DIR/db.sqlite3" "$RUNTIME_DIR/"
-cp "$REPO_DIR/Lost_n_Found/__init__.py" "$RUNTIME_DIR/Lost_n_Found/"
-cp "$REPO_DIR/Lost_n_Found/asgi.py" "$RUNTIME_DIR/Lost_n_Found/"
 cp "$REPO_DIR/Lost_n_Found/settings.py" "$RUNTIME_DIR/Lost_n_Found/"
 cp "$REPO_DIR/Lost_n_Found/urls.py" "$RUNTIME_DIR/Lost_n_Found/"
 cp "$REPO_DIR/Lost_n_Found/wsgi.py" "$RUNTIME_DIR/Lost_n_Found/"
+
+cp "$REPO_DIR/db.sqlite3" "$RUNTIME_DIR/"
+
+cp "$USER_HOME/secrets/secrets.py" "$RUNTIME_DIR/Lost_n_Found/secrets.py"
+
 
 chown -R "$CURRENT_USER:$CURRENT_USER" "$RUNTIME_DIR"
 
