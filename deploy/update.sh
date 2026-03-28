@@ -7,16 +7,28 @@ CURRENT_USER="${SUDO_USER:-$(whoami)}"
 USER_HOME="$(eval echo "~$CURRENT_USER")"
 REPO_DIR="$USER_HOME/se-lost-and-found/src/Lost_n_Found"
 APP_BUILD=$(git rev-parse --short HEAD)
+SECRETS_FILE="$RUNTIME_DIR/Lost_n_Found/secrets.py"
+
+if [ ! -f "$SECRETS_FILE" ]; then
+    echo "ERROR: Missing secrets file: $SECRETS_FILE"
+    exit 1
+fi
 
 systemctl stop lost-n-found
 
-find "$RUNTIME_DIR" -mindepth 1 -maxdepth 1 ! -name 'uwsgi.ini' -exec rm -rf {} +
+find "$RUNTIME_DIR" -mindepth 1 -maxdepth 1 ! -name 'uwsgi.ini' ! -name 'Lost_n_Found' -exec rm -rf {} +
+
+find "$RUNTIME_DIR/Lost_n_Found" -mindepth 1 -maxdepth 1 ! -name 'secrets.py' -exec rm -rf {} +
 
 cp "$REPO_DIR/manage.py" "$RUNTIME_DIR/"
 cp "$REPO_DIR/unix_requirements.txt" "$RUNTIME_DIR/"
 cp -r "$REPO_DIR/app" "$RUNTIME_DIR/"
-cp -r "$REPO_DIR/Lost_n_Found" "$RUNTIME_DIR/"
 cp "$REPO_DIR/db.sqlite3" "$RUNTIME_DIR/"
+cp "$REPO_DIR/Lost_n_Found/__init__.py" "$RUNTIME_DIR/Lost_n_Found/"
+cp "$REPO_DIR/Lost_n_Found/asgi.py" "$RUNTIME_DIR/Lost_n_Found/"
+cp "$REPO_DIR/Lost_n_Found/settings.py" "$RUNTIME_DIR/Lost_n_Found/"
+cp "$REPO_DIR/Lost_n_Found/urls.py" "$RUNTIME_DIR/Lost_n_Found/"
+cp "$REPO_DIR/Lost_n_Found/wsgi.py" "$RUNTIME_DIR/Lost_n_Found/"
 
 chown -R "$CURRENT_USER:$CURRENT_USER" "$RUNTIME_DIR"
 
@@ -38,10 +50,9 @@ deactivate
 
 chown -R "$CURRENT_USER:$CURRENT_USER" "$RUNTIME_DIR"
 
-sudo sed -i "s/^Environment=\"APP_BUILD=.*\"$/Environment=\"APP_BUILD=${APP_BUILD}\"/" /etc/systemd/system/lost-n-found.ser>
+sudo sed -i "s/^Environment=\"APP_BUILD=.*\"$/Environment=\"APP_BUILD=${APP_BUILD}\"/" /etc/systemd/system/lost-n-found.service
 sudo systemctl daemon-reload
 
 systemctl start lost-n-found
 
 echo "Deployment update completed successfully."
-
