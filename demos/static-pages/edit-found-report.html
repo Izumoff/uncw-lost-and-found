@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campus Lost & Found - Edit Found Item Report</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand fw-semibold" href="index.html">Campus Lost &amp; Found</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="edit-lost-report.html">Edit Lost Report</a></li>
+          <li class="nav-item"><a class="nav-link active" href="edit-found-report.html">Edit Found Report</a></li>
+          <li class="nav-item"><a class="nav-link" href="my-reports.html">My Reports</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="py-5">
+    <div class="container">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+          <h1 class="h4 mb-0">Edit Found Item Report</h1>
+          <span class="badge text-bg-warning">Status: Open (Editable)</span>
+        </div>
+        <div class="card-body">
+          <form>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="reportId" class="form-label">Report ID</label>
+                <input type="text" class="form-control" id="reportId" value="FRP-2002" disabled>
+              </div>
+              <div class="col-md-6">
+                <label for="itemName" class="form-label">Item Name</label>
+                <input type="text" class="form-control" id="itemName" value="Silver Keys">
+              </div>
+              <div class="col-md-6">
+                <label for="dateFound" class="form-label">Date Found</label>
+                <input type="date" class="form-control" id="dateFound" value="2026-02-18">
+              </div>
+              <div class="col-md-6">
+                <label for="locationFound" class="form-label">Location Found</label>
+                <input type="text" class="form-control" id="locationFound" value="Fisher Student Center">
+              </div>
+              <div class="col-12">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" rows="4">Set of four keys on a silver ring with a small teal tag.</textarea>
+              </div>
+              <div class="col-12 d-flex gap-2">
+                <button type="button" class="btn btn-primary">Save Changes</button>
+                <a href="my-reports.html" class="btn btn-outline-secondary">Cancel</a>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="card-footer bg-white">
+          <div class="alert alert-info mb-0">
+            Campus users can edit their own found item report before approval.
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="py-4 bg-white border-top">
+    <div class="container text-secondary small">Campus Lost &amp; Found Prototype - Sprint 2</div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
