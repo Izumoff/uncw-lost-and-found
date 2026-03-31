@@ -1,9 +1,19 @@
 {% if user.is_authenticated %}
-<form id="logoutForm" action="/logout/" method="post" class="navbar-right">
+<<form id="logoutForm" action="{% url 'logout' %}" method="post" class="navbar-right">
     {% csrf_token %}
     <ul class="nav navbar-nav navbar-right">
-        <li><span class="navbar-brand">Hello {{ user.username }}!</span></li>
-        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+        <li><span class="navbar-brand">
+            {% if IS_CAMPUS_COMMUNITY_USER %}
+                User:&nbsp;
+            {% endif %}
+
+            {% if IS_SECURITY_OFFICE_STAFF %}
+                Staff:&nbsp;
+            {% endif %}
+
+            {{ user.username }}!
+        </span></li>
+        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log out</a></li>
     </ul>
 </form>
 

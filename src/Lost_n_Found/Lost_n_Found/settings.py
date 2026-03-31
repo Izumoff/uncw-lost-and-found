@@ -15,7 +15,7 @@ import posixpath
 from .secrets import SECRET_KEY, DB_NAME, DB_USER, DB_PASSWORD, DB_HOST
 
 # Application version (semantic version, controlled in code)
-APP_VERSION = "0.0.0"
+APP_VERSION = "0.3.3"
 
 # Build identifier (default for local development)
 APP_BUILD = os.getenv("APP_BUILD", "dev")
@@ -82,6 +82,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'app.context_processors.app_version',
+                'app.context_processors.user_roles',
             ],
         },
     },

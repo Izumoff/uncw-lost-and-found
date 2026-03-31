@@ -2,9 +2,131 @@
 
 {% block content %}
 
-<h2>{{ title }}.</h2>
-<h3>{{ message }}</h3>
+<p>
+    This project is a <strong>Campus Lost & Found web application</strong> developed as part of a Software Engineering course.
+    The goal of the system is to allow campus users to report lost and found items and enable security staff to manage and resolve these reports.
+</p>
 
-<p>Use this area to provide additional information.</p>
+
+<hr />
+
+<h3>User Stories & Progress</h3>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>User Story</th>
+            <th>Role</th>
+            <th>Story Points</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        <tr>
+            <td>1</td>
+            <td>User can log in / log out</td>
+            <td>All Users</td>
+            <td>3</td>
+            <td><strong>DONE</strong></td>
+        </tr>
+
+        <tr>
+            <td>2</td>
+            <td>User roles (Campus User / Security Staff)</td>
+            <td>System</td>
+            <td>3</td>
+            <td><strong>DONE</strong></td>
+        </tr>
+
+        <tr>
+            <td>3</td>
+            <td>Campus user can register</td>
+            <td>Campus User</td>
+            <td>5</td>
+            <td><strong>PLANNED</strong></td>
+        </tr>
+
+        <tr>
+            <td>4</td>
+            <td>User can view published reports</td>
+            <td>Campus User</td>
+            <td>3</td>
+            <td><strong>PLANNED</strong></td>
+        </tr>
+
+        <tr>
+            <td>5</td>
+            <td>User can create Found Item report</td>
+            <td>Campus User</td>
+            <td>5</td>
+            <td><strong>PLANNED</strong></td>
+        </tr>
+
+        <tr>
+            <td>6</td>
+            <td>User can edit own Found Item report</td>
+            <td>Campus User</td>
+            <td>5</td>
+            <td><strong>PLANNED</strong></td>
+        </tr>
+
+        <tr>
+            <td>7</td>
+            <td>User can edit own Lost Item report</td>
+            <td>Campus User</td>
+            <td>5</td>
+            <td><strong>PLANNED</strong></td>
+        </tr>
+
+        <tr>
+            <td>8</td>
+            <td>Staff can change report status</td>
+            <td>Security Staff</td>
+            <td>5</td>
+            <td><strong>PLANNED</strong></td>
+        </tr>
+
+        <tr>
+            <td>9</td>
+            <td>Staff can close reports</td>
+            <td>Security Staff</td>
+            <td>3</td>
+            <td><strong>PLANNED</strong></td>
+        </tr>
+
+        <tr>
+            <td>10</td>
+            <td>Staff can edit report content</td>
+            <td>Security Staff</td>
+            <td>5</td>
+            <td><strong>PLANNED</strong></td>
+        </tr>
+
+        <tr>
+            <td>11</td>
+            <td>User can search and filter reports</td>
+            <td>Campus User</td>
+            <td>8</td>
+            <td><strong>PLANNED</strong></td>
+        </tr>
+
+    </tbody>
+</table>
+
+<hr />
+
+<h3>Development Approach</h3>
+
+<ul>
+    <li>Incremental development using staged roadmap (Sprint-based)</li>
+    <li>Each stage delivers a working, testable feature</li>
+    <li>Focus on usability and correctness before adding complexity</li>
+</ul>
+
+<p>
+    The system is designed to evolve step-by-step while maintaining a stable and runnable application at all times.
+</p>
 
 {% endblock %}
