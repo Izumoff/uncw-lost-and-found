@@ -1,4 +1,5 @@
 """
+urls.py
 Definition of urls for Lost_n_Found.
 """
 
@@ -14,16 +15,15 @@ urlpatterns = [
     path('contact/', views.contact, name='contact'),
     path('about/', views.about, name='about'),
     path('login/',
-         LoginView.as_view
-         (
-             template_name='app/login.html',
-             authentication_form=forms.BootstrapAuthenticationForm,
-             extra_context=
-             {
-                 'title': 'Log in',
-                 'year' : datetime.now().year,
-             }
-         ),
+        LoginView.as_view(
+            template_name='app/login.html',
+            authentication_form=forms.BootstrapAuthenticationForm,
+            redirect_authenticated_user=True,
+            extra_context={
+                'title': 'Log in',
+                'year': datetime.now().year,
+            }
+        ),
          name='login'),
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
     path('admin/', admin.site.urls),
