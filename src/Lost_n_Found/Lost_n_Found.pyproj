@@ -63,6 +63,8 @@
     <Folder Include="Lost_n_Found\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\templates\app\register.html" />
+    <Content Include="app\templates\app\register_verify.html" />
     <Content Include="requirements.txt" />
     <Content Include="unix_requirements.txt" />
     <Content Include="app\static\app\content\bootstrap.css" />

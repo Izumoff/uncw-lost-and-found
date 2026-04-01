@@ -1,0 +1,22 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+<p>{{ message }}</p>
+<p><strong>Email:</strong> {{ email }}</p>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="form-group mb-3">
+        {{ form.code.label_tag }}
+        {{ form.code }}
+        {{ form.code.errors }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Confirm</button>
+</form>
+
+{% endblock %}
