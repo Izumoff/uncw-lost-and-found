@@ -4,13 +4,17 @@ app/views.py
 
 from datetime import datetime
 
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group, User
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
-from django.contrib.auth.models import Group, User
-
-from .forms import CampusUserRegistrationForm, RegistrationVerificationCodeForm
+from .forms import (
+    CampusUserRegistrationForm,
+    FoundItemReportForm,
+    RegistrationVerificationCodeForm,
+)
 from .models import Report
 
 
@@ -89,6 +93,34 @@ def report_detail(request, report_id):
             'title': report.title,
             'year': datetime.now().year,
             'report': report,
+        }
+    )
+
+
+@login_required
+def create_found_report(request):
+    """Renders and processes the found item report creation page."""
+    assert isinstance(request, HttpRequest)
+
+    if request.method == 'POST':
+        form = FoundItemReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.user = request.user
+            report.report_type = Report.REPORT_TYPE_FOUND
+            report.save()
+            return redirect(f"{reverse('create_found_report')}?success=1")
+    else:
+        form = FoundItemReportForm()
+
+    return render(
+        request,
+        'app/found_report_create.html',
+        {
+            'title': 'Create Found Item Report',
+            'year': datetime.now().year,
+            'form': form,
+            'success': request.GET.get('success') == '1',
         }
     )
 

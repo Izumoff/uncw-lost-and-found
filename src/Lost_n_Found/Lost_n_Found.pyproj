@@ -66,6 +66,7 @@
     <Folder Include="Lost_n_Found\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\templates\app\found_report_create.html" />
     <Content Include="app\templates\app\register.html" />
     <Content Include="app\templates\app\register_verify.html" />
     <Content Include="app\templates\app\reports.html" />

@@ -7,6 +7,8 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
+from app.models import Report
+
 
 class BootstrapAuthenticationForm(AuthenticationForm):
     """Authentication form which uses boostrap CSS."""
@@ -79,3 +81,26 @@ class RegistrationVerificationCodeForm(forms.Form):
             'placeholder': 'Verification code'
         })
     )
+
+
+class FoundItemReportForm(forms.ModelForm):
+    """Form for creating a found item report."""
+
+    class Meta:
+        model = Report
+        fields = ("title", "description", "location_text")
+        widgets = {
+            "title": forms.TextInput({
+                'class': 'form-control',
+                'placeholder': 'Report title'
+            }),
+            "description": forms.Textarea({
+                'class': 'form-control',
+                'placeholder': 'Describe the found item',
+                'rows': 5
+            }),
+            "location_text": forms.TextInput({
+                'class': 'form-control',
+                'placeholder': 'Location where the item was found'
+            }),
+        }

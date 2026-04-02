@@ -1,0 +1,48 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h2>Create Found Item Report</h2>
+
+
+    {% if success %}
+    <div class="alert alert-success">
+        Your report has been submitted successfully and is awaiting approval.
+    </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            Please correct the errors below.
+        </div>
+        {% endif %}
+
+        <div class="mb-3">
+            <label class="form-label">Title</label>
+            {{ form.title }}
+            {{ form.title.errors }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            {{ form.description }}
+            {{ form.description.errors }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Location</label>
+            {{ form.location_text }}
+            {{ form.location_text.errors }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Submit Report
+        </button>
+    </form>
+</div>
+
+{% endblock %}
