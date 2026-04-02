@@ -163,6 +163,61 @@ def edit_found_report(request, report_id):
 
 
 
+@login_required
+def edit_lost_report(request, report_id):
+    """Renders and processes editing of a user's own lost item report."""
+    assert isinstance(request, HttpRequest)
+
+    report = get_object_or_404(Report, id=report_id)
+
+    if report.user != request.user:
+        return redirect('reports')
+
+    if report.report_type != Report.REPORT_TYPE_LOST:
+        return redirect('reports')
+
+    if report.is_published:
+        return redirect('reports')
+
+    if request.method == 'POST':
+        form = FoundItemReportForm(request.POST, instance=report)
+        if form.is_valid():
+            form.save()
+            return redirect(f"{reverse('edit_lost_report', args=[report.id])}?updated=1")
+    else:
+        form = FoundItemReportForm(instance=report)
+
+    return render(
+        request,
+        'app/found_report_create.html',
+        {
+            'title': 'Edit Lost Item Report',
+            'year': datetime.now().year,
+            'form': form,
+            'success': False,
+        }
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def register(request):
     """Renders and processes the campus user registration page."""
     assert isinstance(request, HttpRequest)
