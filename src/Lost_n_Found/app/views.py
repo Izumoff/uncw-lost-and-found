@@ -237,6 +237,66 @@ def change_report_status(request, report_id):
     return redirect(f"{reverse('report_detail', args=[report.id])}?status_updated=1")
 
 
+
+
+@login_required
+def resolve_report(request, report_id):
+    """Allows Security Office Staff to mark a report as resolved."""
+    report = get_object_or_404(Report, id=report_id)
+
+    is_security_office_staff = request.user.groups.filter(
+        name='Security Office Staff'
+    ).exists()
+
+    if not is_security_office_staff:
+        return redirect('reports')
+
+    if report.status not in ['resolved', 'closed']:
+        report.status = 'resolved'
+        report.save()
+
+    return redirect('report_detail', report_id=report.id)
+
+
+@login_required
+def close_report(request, report_id):
+    """Allows Security Office Staff to mark a report as closed."""
+    report = get_object_or_404(Report, id=report_id)
+
+    is_security_office_staff = request.user.groups.filter(
+        name='Security Office Staff'
+    ).exists()
+
+    if not is_security_office_staff:
+        return redirect('reports')
+
+    if report.status not in ['resolved', 'closed']:
+        report.status = 'closed'
+        report.save()
+
+    return redirect('report_detail', report_id=report.id)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def register(request):
     """Renders and processes the campus user registration page."""
     assert isinstance(request, HttpRequest)
