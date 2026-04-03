@@ -9,6 +9,18 @@
 </div>
 {% endif %}
 
+{% if request.GET.resolved == '1' %}
+<div class="alert alert-success">
+    Report was marked as resolved successfully.
+</div>
+{% endif %}
+
+{% if request.GET.closed == '1' %}
+<div class="alert alert-success">
+    Report was closed successfully.
+</div>
+{% endif %}
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <strong>Report Details</strong>
@@ -22,7 +34,6 @@
         <p>{{ report.description }}</p>
     </div>
 </div>
-
 
 {% if IS_SECURITY_OFFICE_STAFF %}
 <div class="panel panel-warning">
@@ -38,11 +49,21 @@
                     <option value="pending" {% if report.status == 'pending' %}selected{% endif %}>Pending</option>
                     <option value="approved" {% if report.status == 'approved' %}selected{% endif %}>Approved</option>
                     <option value="rejected" {% if report.status == 'rejected' %}selected{% endif %}>Rejected</option>
+                    <option value="resolved" {% if report.status == 'resolved' %}selected{% endif %}>Resolved</option>
+                    <option value="closed" {% if report.status == 'closed' %}selected{% endif %}>Closed</option>
                 </select>
             </div>
             <br />
             <button type="submit" class="btn btn-warning">Update Status</button>
         </form>
+
+        {% if report.status != 'resolved' and report.status != 'closed' %}
+        <hr />
+        <p>
+            <a href="{% url 'resolve_report' report.id %}" class="btn btn-success">Mark as Resolved</a>
+            <a href="{% url 'close_report' report.id %}" class="btn btn-default">Close Report</a>
+        </p>
+        {% endif %}
     </div>
 </div>
 {% endif %}
