@@ -231,9 +231,10 @@ def change_report_status(request, report_id):
 
         if new_status in allowed_statuses:
             report.status = new_status
+            report.is_published = (new_status == Report.STATUS_APPROVED)
             report.save()
 
-    return redirect('report_detail', report_id=report.id)
+    return redirect(f"{reverse('report_detail', args=[report.id])}?status_updated=1")
 
 
 def register(request):

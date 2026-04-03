@@ -3,6 +3,12 @@
 {% block content %}
 <h2>{{ report.title }}</h2>
 
+{% if request.GET.status_updated == '1' %}
+<div class="alert alert-success">
+    Report status was updated successfully.
+</div>
+{% endif %}
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <strong>Report Details</strong>
