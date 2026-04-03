@@ -82,9 +82,16 @@ def report_detail(request, report_id):
 
     report = get_object_or_404(Report, id=report_id)
 
-    # Allow access if published OR owner
+    is_security_office_staff = request.user.is_authenticated and request.user.groups.filter(
+        name='Security Office Staff'
+    ).exists()
+
+    # Allow access if published, owner, or security office staff.
     if not report.is_published:
-        if not request.user.is_authenticated or report.user != request.user:
+        if not request.user.is_authenticated:
+            return redirect('reports')
+
+        if report.user != request.user and not is_security_office_staff:
             return redirect('reports')
 
     return render(
@@ -94,6 +101,7 @@ def report_detail(request, report_id):
             'title': report.title,
             'year': datetime.now().year,
             'report': report,
+            'IS_SECURITY_OFFICE_STAFF': is_security_office_staff,
         }
     )
 
@@ -162,7 +170,6 @@ def edit_found_report(request, report_id):
     )
 
 
-
 @login_required
 def edit_lost_report(request, report_id):
     """Renders and processes editing of a user's own lost item report."""
@@ -199,23 +206,34 @@ def edit_lost_report(request, report_id):
     )
 
 
+@login_required
+def change_report_status(request, report_id):
+    """Processes security office staff status updates for a report."""
+    assert isinstance(request, HttpRequest)
 
+    report = get_object_or_404(Report, id=report_id)
 
+    is_security_office_staff = request.user.groups.filter(
+        name='Security Office Staff'
+    ).exists()
 
+    if not is_security_office_staff:
+        return redirect('reports')
 
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
 
+        allowed_statuses = [
+            Report.STATUS_PENDING,
+            Report.STATUS_APPROVED,
+            Report.STATUS_REJECTED,
+        ]
 
+        if new_status in allowed_statuses:
+            report.status = new_status
+            report.save()
 
-
-
-
-
-
-
-
-
-
-
+    return redirect('report_detail', report_id=report.id)
 
 
 def register(request):

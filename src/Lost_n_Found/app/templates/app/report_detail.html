@@ -9,12 +9,37 @@
     </div>
     <div class="panel-body">
         <p><strong>Type:</strong> {{ report.get_report_type_display }}</p>
+        <p><strong>Status:</strong> {{ report.get_status_display }}</p>
         <p><strong>Location:</strong> {{ report.location_text }}</p>
         <p><strong>Created:</strong> {{ report.created_at }}</p>
         <p><strong>Description:</strong></p>
         <p>{{ report.description }}</p>
     </div>
 </div>
+
+
+{% if IS_SECURITY_OFFICE_STAFF %}
+<div class="panel panel-warning">
+    <div class="panel-heading">
+        <strong>Change Report Status (Staff)</strong>
+    </div>
+    <div class="panel-body">
+        <form method="post" action="{% url 'change_report_status' report.id %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="status">Status:</label>
+                <select name="status" class="form-control">
+                    <option value="pending" {% if report.status == 'pending' %}selected{% endif %}>Pending</option>
+                    <option value="approved" {% if report.status == 'approved' %}selected{% endif %}>Approved</option>
+                    <option value="rejected" {% if report.status == 'rejected' %}selected{% endif %}>Rejected</option>
+                </select>
+            </div>
+            <br />
+            <button type="submit" class="btn btn-warning">Update Status</button>
+        </form>
+    </div>
+</div>
+{% endif %}
 
 {% if user.is_authenticated and report.user == user and not report.is_published %}
 <p>
