@@ -134,14 +134,24 @@ def create_found_report(request):
     )
 
 
+
+
+
+
+
+
 @login_required
 def edit_found_report(request, report_id):
-    """Renders and processes editing of a user's own found item report."""
+    """Renders and processes editing of a found item report."""
     assert isinstance(request, HttpRequest)
 
     report = get_object_or_404(Report, id=report_id)
 
-    if report.user != request.user:
+    is_security_office_staff = request.user.groups.filter(
+        name='Security Office Staff'
+    ).exists()
+
+    if report.user != request.user and not is_security_office_staff:
         return redirect('reports')
 
     if report.report_type != Report.REPORT_TYPE_FOUND:
@@ -172,12 +182,16 @@ def edit_found_report(request, report_id):
 
 @login_required
 def edit_lost_report(request, report_id):
-    """Renders and processes editing of a user's own lost item report."""
+    """Renders and processes editing of a lost item report."""
     assert isinstance(request, HttpRequest)
 
     report = get_object_or_404(Report, id=report_id)
 
-    if report.user != request.user:
+    is_security_office_staff = request.user.groups.filter(
+        name='Security Office Staff'
+    ).exists()
+
+    if report.user != request.user and not is_security_office_staff:
         return redirect('reports')
 
     if report.report_type != Report.REPORT_TYPE_LOST:
@@ -204,6 +218,12 @@ def edit_lost_report(request, report_id):
             'success': False,
         }
     )
+
+
+
+
+
+
 
 
 @login_required
