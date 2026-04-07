@@ -23,16 +23,17 @@
             <div class="collapse navbar-collapse" id="main-nav">
                 <ul class="nav navbar-nav">
                     <li><a href="{% url 'home' %}" style="color:#ffffff;">Home</a></li>
-                    <li><a href="{% url 'reports' %}" style="color:#ffffff;">Reports</a></li>
+                    <li><a href="{% url 'reports' %}?scope=published" style="color:#ffffff;">Reports</a></li>
+
                     {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'create_found_report' %}">
-                            Report Found Item
-                        </a>
-                    </li>
+                    <li><a href="{% url 'reports' %}?scope=mine" style="color:#ffffff;">My Reports</a></li>
+                    <li><a href="{% url 'create_found_report' %}" style="color:#ffffff;">Create Report</a></li>
+
+                    {% if IS_SECURITY_OFFICE_STAFF %}
+                    <li><a href="{% url 'reports' %}?scope=all" style="color:#ffffff;">All Reports</a></li>
                     {% endif %}
-                    <li><a href="#" style="color:#ffffff;">Create Report</a></li>
-                    <li><a href="#" style="color:#ffffff;">My Reports</a></li>
+                    {% endif %}
+
                     <li><a href="{% url 'about' %}" style="color:#ffffff;">About</a></li>
                     <li><a href="{% url 'contact' %}" style="color:#ffffff;">Contact</a></li>
                 </ul>

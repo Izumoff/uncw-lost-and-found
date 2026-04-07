@@ -60,18 +60,38 @@ def about(request):
 
 
 def reports(request):
-    """Renders the published reports list page."""
+    """Renders the reports list page with scope filtering."""
     assert isinstance(request, HttpRequest)
 
-    published_reports = Report.objects.filter(is_published=True)
+    scope = request.GET.get('scope', 'published')
+
+    reports = Report.objects.all()
+
+    is_security_office_staff = request.user.is_authenticated and request.user.groups.filter(
+        name='Security Office Staff'
+    ).exists()
+
+    # Scope filtering
+    if scope == 'mine' and request.user.is_authenticated:
+        reports = reports.filter(user=request.user)
+
+    elif scope == 'all':
+        if is_security_office_staff:
+            reports = reports
+        else:
+            reports = reports.filter(is_published=True)
+
+    else:
+        # Default: published only
+        reports = reports.filter(is_published=True)
 
     return render(
         request,
         'app/reports.html',
         {
-            'title': 'Published Reports',
+            'title': 'Reports',
             'year': datetime.now().year,
-            'reports': published_reports,
+            'reports': reports,
         }
     )
 

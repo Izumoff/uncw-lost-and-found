@@ -15,7 +15,7 @@ import posixpath
 from .secrets import SECRET_KEY, DB_NAME, DB_USER, DB_PASSWORD, DB_HOST
 
 # Application version (semantic version, controlled in code)
-APP_VERSION = "0.3.10"
+APP_VERSION = "0.3.11"
 
 # Build identifier (default for local development)
 APP_BUILD = os.getenv("APP_BUILD", "dev")
