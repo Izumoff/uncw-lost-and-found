@@ -23,6 +23,7 @@ urlpatterns = [
     path('reports/<int:report_id>/close/', views.close_report, name='close_report'),
 
     path('reports/create/found/', views.create_found_report, name='create_found_report'),
+    path('reports/create/lost/', views.create_lost_report, name='create_lost_report'),
 
     path('register/', views.register, name='register'),
     path('register/verify/', views.register_verify, name='register_verify'),

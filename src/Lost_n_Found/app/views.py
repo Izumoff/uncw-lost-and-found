@@ -195,7 +195,7 @@ def create_found_report(request):
 
     return render(
         request,
-        'app/found_report_create.html',
+        'app/report_form.html',
         {
             'title': 'Create Found Item Report',
             'year': datetime.now().year,
@@ -205,10 +205,32 @@ def create_found_report(request):
     )
 
 
+@login_required
+def create_lost_report(request):
+    """Renders and processes the lost item report creation page."""
+    assert isinstance(request, HttpRequest)
 
+    if request.method == 'POST':
+        form = FoundItemReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.user = request.user
+            report.report_type = Report.REPORT_TYPE_LOST
+            report.save()
+            return redirect(f"{reverse('create_lost_report')}?success=1")
+    else:
+        form = FoundItemReportForm()
 
-
-
+    return render(
+        request,
+        'app/report_form.html',
+        {
+            'title': 'Create Lost Item Report',
+            'year': datetime.now().year,
+            'form': form,
+            'success': request.GET.get('success') == '1',
+        }
+    )
 
 
 @login_required
@@ -241,7 +263,7 @@ def edit_found_report(request, report_id):
 
     return render(
         request,
-        'app/found_report_create.html',
+        'app/report_form.html',
         {
             'title': 'Edit Found Item Report',
             'year': datetime.now().year,
@@ -281,7 +303,7 @@ def edit_lost_report(request, report_id):
 
     return render(
         request,
-        'app/found_report_create.html',
+        'app/report_form.html',
         {
             'title': 'Edit Lost Item Report',
             'year': datetime.now().year,
@@ -289,12 +311,6 @@ def edit_lost_report(request, report_id):
             'success': False,
         }
     )
-
-
-
-
-
-
 
 
 @login_required
@@ -390,26 +406,6 @@ def close_report(request, report_id):
         report.save()
 
     return redirect(f'/reports/{report.id}/?closed=1')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def register(request):

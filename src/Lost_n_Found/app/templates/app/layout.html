@@ -26,9 +26,9 @@
                     <li><a href="{% url 'reports' %}?scope=published" style="color:#ffffff;">Reports</a></li>
 
                     {% if user.is_authenticated %}
-                        <li><a href="{% url 'create_found_report' %}" style="color:#ffffff;">Create Report</a></li>
+                        <li><a href="{% url 'create_found_report' %}" style="color:#ffffff;">I Found</a></li>
+                        <li><a href="{% url 'create_lost_report' %}" style="color:#ffffff;">I Lost</a></li>
                         <li><a href="{% url 'reports' %}?scope=mine" style="color:#ffffff;">My Reports</a></li>
-
 
                         {% if IS_SECURITY_OFFICE_STAFF %}
                             <li><a href="{% url 'reports' %}?scope=all" style="color:#ffffff;">All Reports</a></li>
