@@ -60,10 +60,16 @@ def about(request):
 
 
 def reports(request):
-    """Renders the reports list page with scope filtering."""
+    """Renders the reports list page with scope and filter handling."""
     assert isinstance(request, HttpRequest)
 
     scope = request.GET.get('scope', 'published')
+    report_type = request.GET.get('report_type', '').strip()
+    status = request.GET.get('status', '').strip()
+    location = request.GET.get('location', '').strip()
+    query = request.GET.get('query', '').strip()
+    date_from = request.GET.get('date_from', '').strip()
+    date_to = request.GET.get('date_to', '').strip()
 
     reports = Report.objects.all()
 
@@ -76,14 +82,47 @@ def reports(request):
         reports = reports.filter(user=request.user)
 
     elif scope == 'all':
-        if is_security_office_staff:
-            reports = reports
-        else:
+        if not is_security_office_staff:
             reports = reports.filter(is_published=True)
 
     else:
-        # Default: published only
         reports = reports.filter(is_published=True)
+
+    # Report type filtering
+    allowed_report_types = [
+        Report.REPORT_TYPE_FOUND,
+        Report.REPORT_TYPE_LOST,
+    ]
+    if report_type in allowed_report_types:
+        reports = reports.filter(report_type=report_type)
+
+    # Status filtering
+    allowed_statuses = [
+        Report.STATUS_PENDING,
+        Report.STATUS_APPROVED,
+        Report.STATUS_REJECTED,
+    ]
+    if status in allowed_statuses:
+        reports = reports.filter(status=status)
+
+    # Location filtering
+    if location:
+        reports = reports.filter(location_text__icontains=location)
+
+    # Search text filtering
+    if query:
+        reports = reports.filter(title__icontains=query) | reports.filter(
+            description__icontains=query
+        ) | reports.filter(location_text__icontains=query)
+
+    # Date filtering
+    if date_from:
+        reports = reports.filter(created_at__date__gte=date_from)
+
+    if date_to:
+        reports = reports.filter(created_at__date__lte=date_to)
+
+    reports = reports.order_by('-created_at')
 
     return render(
         request,
@@ -92,6 +131,14 @@ def reports(request):
             'title': 'Reports',
             'year': datetime.now().year,
             'reports': reports,
+            'current_scope': scope,
+            'current_report_type': report_type,
+            'current_status': status,
+            'current_location': location,
+            'current_query': query,
+            'current_date_from': date_from,
+            'current_date_to': date_to,
+            'IS_SECURITY_OFFICE_STAFF': is_security_office_staff,
         }
     )
 
