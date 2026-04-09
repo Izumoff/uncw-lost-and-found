@@ -80,6 +80,21 @@
     {% endif %}
 {% endif %}
 
+
+
+{% if user.is_authenticated and report.user == user %}
+    {% if report.report_type == 'lost' and report.outcome == 'open' %}
+<p>
+    <a href="{% url 'close_own_report' report.id %}" class="btn btn-danger">
+        Close My Report
+    </a>
+</p>
+    {% endif %}
+{% endif %}
+
+
+
+
 <p>
     <a href="{% url 'reports' %}">Back to Reports</a>
 </p>

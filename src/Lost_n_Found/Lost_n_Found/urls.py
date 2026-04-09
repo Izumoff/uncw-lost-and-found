@@ -28,6 +28,7 @@ urlpatterns = [
     path('reports/<int:report_id>/status/', views.change_report_status, name='change_report_status'),
     path('reports/<int:report_id>/resolve/', views.resolve_report, name='resolve_report'),
     path('reports/<int:report_id>/close/', views.close_report, name='close_report'),
+    path('reports/<int:report_id>/close-own/', views.close_own_report, name='close_own_report'),
 
     path('reports/create/found/', views.create_found_report, name='create_found_report'),
     path('reports/create/lost/', views.create_lost_report, name='create_lost_report'),

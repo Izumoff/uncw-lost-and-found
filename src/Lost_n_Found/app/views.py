@@ -390,22 +390,24 @@ def close_report(request, report_id):
 
 
 @login_required
-def close_report(request, report_id):
-    """Allows Security Office Staff to mark a report as closed."""
+def close_own_report(request, report_id):
+    """Allows a campus user to close their own lost item report."""
     report = get_object_or_404(Report, id=report_id)
 
-    is_security_office_staff = request.user.groups.filter(
-        name='Security Office Staff'
-    ).exists()
-
-    if not is_security_office_staff:
+    if report.user != request.user:
         return redirect('reports')
 
-    if report.status not in ['resolved', 'closed']:
-        report.status = 'closed'
-        report.save()
+    if report.report_type != Report.REPORT_TYPE_LOST:
+        return redirect('reports')
 
-    return redirect(f'/reports/{report.id}/?closed=1')
+    if report.outcome != Report.OUTCOME_OPEN:
+        return redirect('report_detail', report_id=report.id)
+
+    report.outcome = Report.OUTCOME_CLOSED
+    report.save()
+
+    return redirect(f"{reverse('report_detail', args=[report.id])}?closed=1")
+
 
 
 def register(request):
