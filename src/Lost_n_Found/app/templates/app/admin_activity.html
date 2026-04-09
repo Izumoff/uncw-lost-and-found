@@ -36,9 +36,17 @@
                         <td>{{ log.object_repr }}</td>
                         <td>
                             {% if log.change_message %}
-                            {{ log.change_message }}
+                                {% if "changed" in log.change_message %}
+                                    Fields updated
+                                {% elif "added" in log.change_message %}
+                                    Object created
+                                {% elif "deleted" in log.change_message %}
+                                    Object deleted
+                                {% else %}
+                                    {{ log.change_message }}
+                                {% endif %}
                             {% else %}
-                            No additional details
+                                No additional details
                             {% endif %}
                         </td>
                     </tr>
