@@ -1,0 +1,79 @@
+{# app/templates/app/admin_usage_monitoring.html #}
+
+{% extends "app/layout.html" %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <strong>Usage Monitoring</strong>
+    </div>
+    <div class="panel-body">
+        <p>
+            Summary statistics for reports, users, and system activity.
+        </p>
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="col-md-4">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <strong>Reports</strong>
+            </div>
+            <div class="panel-body">
+                <p><strong>Total Reports:</strong> {{ report_stats.total_reports }}</p>
+                <p><strong>Found Reports:</strong> {{ report_stats.total_found_reports }}</p>
+                <p><strong>Lost Reports:</strong> {{ report_stats.total_lost_reports }}</p>
+                <p><strong>Published Reports:</strong> {{ report_stats.published_reports }}</p>
+                <p><strong>Approved Reports:</strong> {{ report_stats.approved_reports }}</p>
+                <p><strong>Pending Reports:</strong> {{ report_stats.pending_reports }}</p>
+                <p><strong>Rejected Reports:</strong> {{ report_stats.rejected_reports }}</p>
+                <p><strong>Resolved Reports:</strong> {{ report_stats.resolved_reports }}</p>
+                <p><strong>Closed Reports:</strong> {{ report_stats.closed_reports }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <strong>Users</strong>
+            </div>
+            <div class="panel-body">
+                <p><strong>Total Users:</strong> {{ user_stats.total_users }}</p>
+                <p><strong>Superusers:</strong> {{ user_stats.total_superusers }}</p>
+                <p><strong>Campus Community Users:</strong> {{ user_stats.total_campus_users }}</p>
+                <p><strong>Security Office Staff:</strong> {{ user_stats.total_security_staff }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <strong>Activity</strong>
+            </div>
+            <div class="panel-body">
+                <p><strong>Total Activity Logs:</strong> {{ activity_stats.total_activity_logs }}</p>
+
+                {% if activity_stats.latest_activity_time %}
+                <p><strong>Latest Activity:</strong> {{ activity_stats.latest_activity_time }}</p>
+                {% else %}
+                <p><strong>Latest Activity:</strong> No activity recorded</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div style="margin-top:20px;">
+    <a href="{% url 'admin_console' %}" class="btn btn-default">
+        Back to Admin Console
+    </a>
+</div>
+
+{% endblock %}

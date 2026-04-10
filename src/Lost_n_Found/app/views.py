@@ -283,6 +283,76 @@ def admin_activity(request):
 
 
 @login_required
+def admin_usage_monitoring(request):
+    """Renders the admin console usage monitoring page."""
+    assert isinstance(request, HttpRequest)
+
+    if not request.user.is_superuser:
+        return redirect('reports')
+
+    report_stats = {
+        'total_reports': Report.objects.count(),
+        'total_found_reports': Report.objects.filter(
+            report_type=Report.REPORT_TYPE_FOUND
+        ).count(),
+        'total_lost_reports': Report.objects.filter(
+            report_type=Report.REPORT_TYPE_LOST
+        ).count(),
+        'published_reports': Report.objects.filter(
+            is_published=True
+        ).count(),
+        'approved_reports': Report.objects.filter(
+            status=Report.STATUS_APPROVED
+        ).count(),
+        'pending_reports': Report.objects.filter(
+            status=Report.STATUS_PENDING
+        ).count(),
+        'rejected_reports': Report.objects.filter(
+            status=Report.STATUS_REJECTED
+        ).count(),
+        'resolved_reports': Report.objects.filter(
+            outcome=Report.OUTCOME_RESOLVED
+        ).count(),
+        'closed_reports': Report.objects.filter(
+            outcome=Report.OUTCOME_CLOSED
+        ).count(),
+    }
+
+    user_stats = {
+        'total_users': User.objects.count(),
+        'total_superusers': User.objects.filter(is_superuser=True).count(),
+        'total_campus_users': User.objects.filter(
+            groups__name='Campus Community User'
+        ).distinct().count(),
+        'total_security_staff': User.objects.filter(
+            groups__name='Security Office Staff'
+        ).distinct().count(),
+    }
+
+    activity_logs_count = LogEntry.objects.count()
+    latest_activity = LogEntry.objects.order_by('-action_time').first()
+
+    activity_stats = {
+        'total_activity_logs': activity_logs_count,
+        'latest_activity_time': latest_activity.action_time if latest_activity else None,
+    }
+
+    return render(
+        request,
+        'app/admin_usage_monitoring.html',
+        {
+            'title': 'Admin Console: Usage Monitoring',
+            'year': datetime.now().year,
+            'report_stats': report_stats,
+            'user_stats': user_stats,
+            'activity_stats': activity_stats,
+        }
+    )
+
+
+
+
+@login_required
 def create_found_report(request):
     """Renders and processes the found item report creation page."""
     assert isinstance(request, HttpRequest)

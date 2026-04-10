@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\templates\app\admin_activity.html" />
+    <Content Include="app\templates\app\admin_usage_monitoring.html" />
     <Content Include="app\templates\app\admin_users.html" />
     <Content Include="app\templates\app\password_reset_complete.html" />
     <Content Include="app\templates\app\password_reset_confirm.html" />

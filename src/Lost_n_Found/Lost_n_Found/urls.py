@@ -39,6 +39,7 @@ urlpatterns = [
     path('admin-console/reports/', views.admin_reports, name='admin_reports'),
     path('admin-console/users/', views.admin_users, name='admin_users'),
     path('admin-console/activity/', views.admin_activity, name='admin_activity'),
+    path('admin-console/usage/', views.admin_usage_monitoring, name='admin_usage_monitoring'),
 
     path('register/', views.register, name='register'),
     path('register/verify/', views.register_verify, name='register_verify'),
