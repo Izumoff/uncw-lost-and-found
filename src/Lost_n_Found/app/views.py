@@ -11,6 +11,9 @@ from django.db.models import Q
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+import logging
+
+logger = logging.getLogger(__name__)
 
 from .forms import (
     CampusUserRegistrationForm,
@@ -244,6 +247,11 @@ def admin_users(request):
             target_user.groups.clear()
             target_user.groups.add(target_group)
 
+            logger.info(
+                f"Admin {request.user.id} changed role for user {target_user.id} to {group_name}"
+            )
+
+
             return redirect(f"{reverse('admin_users')}?updated=1")
 
     users = User.objects.filter(is_superuser=False).order_by('username')
@@ -269,7 +277,7 @@ def admin_activity(request):
     if not request.user.is_superuser:
         return redirect('reports')
 
-    activity_logs = LogEntry.objects.select_related('user').order_by('-action_time')[:50]
+    activity_logs = Report.objects.select_related('user').order_by('-created_at')[:50]
 
     return render(
         request,
@@ -278,6 +286,7 @@ def admin_activity(request):
             'title': 'Admin Console: System Activity',
             'year': datetime.now().year,
             'activity_logs': activity_logs,
+            'IS_REPORT_ACTIVITY': True,
         }
     )
 
@@ -493,6 +502,9 @@ def change_report_status(request, report_id):
     """Processes security office staff status updates for a report."""
     assert isinstance(request, HttpRequest)
 
+    if request.method != 'POST':
+        return redirect('reports')
+
     report = get_object_or_404(Report, id=report_id)
 
     is_security_office_staff = request.user.groups.filter(
@@ -502,19 +514,24 @@ def change_report_status(request, report_id):
     if not is_security_office_staff:
         return redirect('reports')
 
-    if request.method == 'POST':
-        new_status = request.POST.get('status')
+    new_status = request.POST.get('status')
 
-        allowed_statuses = [
-            Report.STATUS_PENDING,
-            Report.STATUS_APPROVED,
-            Report.STATUS_REJECTED,
-        ]
+    allowed_statuses = [
+        Report.STATUS_PENDING,
+        Report.STATUS_APPROVED,
+        Report.STATUS_REJECTED,
+    ]
 
-        if new_status in allowed_statuses:
-            report.status = new_status
-            report.is_published = (new_status == Report.STATUS_APPROVED)
-            report.save()
+    if (
+        new_status in allowed_statuses and
+        report.outcome == Report.OUTCOME_OPEN
+    ):
+        report.status = new_status
+        report.is_published = (new_status == Report.STATUS_APPROVED)
+        logger.info(
+            f"User {request.user.id} changed status of report {report.id} to {new_status}"
+        )
+        report.save()
 
     return redirect(f"{reverse('report_detail', args=[report.id])}?status_updated=1")
 
@@ -522,6 +539,11 @@ def change_report_status(request, report_id):
 @login_required
 def resolve_report(request, report_id):
     """Allows Security Office Staff to mark an approved open report as resolved."""
+    assert isinstance(request, HttpRequest)
+
+    if request.method != 'POST':
+        return redirect('reports')
+
     report = get_object_or_404(Report, id=report_id)
 
     is_security_office_staff = request.user.groups.filter(
@@ -536,14 +558,22 @@ def resolve_report(request, report_id):
         report.outcome == Report.OUTCOME_OPEN
     ):
         report.outcome = Report.OUTCOME_RESOLVED
+        logger.info(
+            f"User {request.user.id} resolved report {report.id}"
+        )
         report.save()
 
-    return redirect(f'/reports/{report.id}/?resolved=1')
+    return redirect(f"{reverse('report_detail', args=[report.id])}?resolved=1")
 
 
 @login_required
 def close_report(request, report_id):
     """Allows Security Office Staff to mark an approved open report as closed."""
+    assert isinstance(request, HttpRequest)
+
+    if request.method != 'POST':
+        return redirect('reports')
+
     report = get_object_or_404(Report, id=report_id)
 
     is_security_office_staff = request.user.groups.filter(
@@ -558,14 +588,24 @@ def close_report(request, report_id):
         report.outcome == Report.OUTCOME_OPEN
     ):
         report.outcome = Report.OUTCOME_CLOSED
+
+        logger.info(
+            f"User {request.user.id} closed report {report.id}"
+        )
+
         report.save()
 
-    return redirect(f'/reports/{report.id}/?closed=1')
+    return redirect(f"{reverse('report_detail', args=[report.id])}?closed=1")
 
 
 @login_required
 def close_own_report(request, report_id):
     """Allows a campus user to close their own lost item report."""
+    assert isinstance(request, HttpRequest)
+
+    if request.method != 'POST':
+        return redirect('reports')
+
     report = get_object_or_404(Report, id=report_id)
 
     if report.user != request.user:
@@ -578,6 +618,11 @@ def close_own_report(request, report_id):
         return redirect('report_detail', report_id=report.id)
 
     report.outcome = Report.OUTCOME_CLOSED
+
+    logger.info(
+        f"User {request.user.id} closed own report {report.id}"
+    )
+
     report.save()
 
     return redirect(f"{reverse('report_detail', args=[report.id])}?closed=1")

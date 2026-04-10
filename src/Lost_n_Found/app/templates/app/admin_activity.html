@@ -12,7 +12,7 @@
     <div class="panel-body">
 
         <p>
-            Recent system activity is shown below.
+            Recent report activity is shown below.
         </p>
 
         {% if activity_logs %}
@@ -23,6 +23,7 @@
                         <th>Date / Time</th>
                         <th>User</th>
                         <th>Action</th>
+                        <th>Report ID</th>
                         <th>Object</th>
                         <th>Description</th>
                     </tr>
@@ -30,24 +31,13 @@
                 <tbody>
                     {% for log in activity_logs %}
                     <tr>
-                        <td>{{ log.action_time }}</td>
+                        <td>{{ log.created_at }}</td>
                         <td>{{ log.user.username }}</td>
-                        <td>{{ log.get_action_flag_display }}</td>
-                        <td>{{ log.object_repr }}</td>
+                        <td>Created</td>
+                        <td>{{ log.id }}</td>
+                        <td>{{ log.title }}</td>
                         <td>
-                            {% if log.change_message %}
-                                {% if "changed" in log.change_message %}
-                                    Fields updated
-                                {% elif "added" in log.change_message %}
-                                    Object created
-                                {% elif "deleted" in log.change_message %}
-                                    Object deleted
-                                {% else %}
-                                    {{ log.change_message }}
-                                {% endif %}
-                            {% else %}
-                                No additional details
-                            {% endif %}
+                            {{ log.get_report_type_display }} report submitted
                         </td>
                     </tr>
                     {% endfor %}

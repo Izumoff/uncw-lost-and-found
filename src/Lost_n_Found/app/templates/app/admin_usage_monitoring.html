@@ -11,7 +11,7 @@
     </div>
     <div class="panel-body">
         <p>
-            Summary statistics for reports, users, and system activity.
+            This dashboard shows summary statistics for reports, users, and recent system activity.
         </p>
     </div>
 </div>
@@ -24,15 +24,32 @@
                 <strong>Reports</strong>
             </div>
             <div class="panel-body">
-                <p><strong>Total Reports:</strong> {{ report_stats.total_reports }}</p>
-                <p><strong>Found Reports:</strong> {{ report_stats.total_found_reports }}</p>
-                <p><strong>Lost Reports:</strong> {{ report_stats.total_lost_reports }}</p>
-                <p><strong>Published Reports:</strong> {{ report_stats.published_reports }}</p>
-                <p><strong>Approved Reports:</strong> {{ report_stats.approved_reports }}</p>
-                <p><strong>Pending Reports:</strong> {{ report_stats.pending_reports }}</p>
-                <p><strong>Rejected Reports:</strong> {{ report_stats.rejected_reports }}</p>
-                <p><strong>Resolved Reports:</strong> {{ report_stats.resolved_reports }}</p>
-                <p><strong>Closed Reports:</strong> {{ report_stats.closed_reports }}</p>
+
+                <h5><strong>Overview</strong></h5>
+                <p style="font-size:18px;">
+                    <strong>Total: {{ report_stats.total_reports }}</strong>
+                </p>
+                <p>Published: {{ report_stats.published_reports }}</p>
+
+                <hr />
+
+                <h5><strong>By Type</strong></h5>
+                <p>Found: {{ report_stats.total_found_reports }}</p>
+                <p>Lost: {{ report_stats.total_lost_reports }}</p>
+
+                <hr />
+
+                <h5><strong>By Status</strong></h5>
+                <p>Approved: {{ report_stats.approved_reports }}</p>
+                <p>Pending: {{ report_stats.pending_reports }}</p>
+                <p>Rejected: {{ report_stats.rejected_reports }}</p>
+
+                <hr />
+
+                <h5><strong>Outcomes</strong></h5>
+                <p>Resolved: {{ report_stats.resolved_reports }}</p>
+                <p>Closed: {{ report_stats.closed_reports }}</p>
+
             </div>
         </div>
     </div>
@@ -43,10 +60,19 @@
                 <strong>Users</strong>
             </div>
             <div class="panel-body">
-                <p><strong>Total Users:</strong> {{ user_stats.total_users }}</p>
-                <p><strong>Superusers:</strong> {{ user_stats.total_superusers }}</p>
-                <p><strong>Campus Community Users:</strong> {{ user_stats.total_campus_users }}</p>
-                <p><strong>Security Office Staff:</strong> {{ user_stats.total_security_staff }}</p>
+
+                <h5><strong>Overview</strong></h5>
+                <p style="font-size:18px;">
+                    <strong>Total Users: {{ user_stats.total_users }}</strong>
+                </p>
+                <p>Superusers: {{ user_stats.total_superusers }}</p>
+
+                <hr />
+
+                <h5><strong>Roles</strong></h5>
+                <p>Campus Community: {{ user_stats.total_campus_users }}</p>
+                <p>Security Staff: {{ user_stats.total_security_staff }}</p>
+
             </div>
         </div>
     </div>
@@ -57,13 +83,21 @@
                 <strong>Activity</strong>
             </div>
             <div class="panel-body">
-                <p><strong>Total Activity Logs:</strong> {{ activity_stats.total_activity_logs }}</p>
 
+                <h5><strong>Activity Summary</strong></h5>
+                <p style="font-size:18px;">
+                    <strong>Total Logs: {{ activity_stats.total_activity_logs }}</strong>
+                </p>
+
+                <hr />
+
+                <h5><strong>Latest Activity</strong></h5>
                 {% if activity_stats.latest_activity_time %}
-                <p><strong>Latest Activity:</strong> {{ activity_stats.latest_activity_time }}</p>
+                <p>{{ activity_stats.latest_activity_time }}</p>
                 {% else %}
-                <p><strong>Latest Activity:</strong> No activity recorded</p>
+                <p>No activity recorded</p>
                 {% endif %}
+
             </div>
         </div>
     </div>

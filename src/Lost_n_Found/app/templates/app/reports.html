@@ -75,6 +75,7 @@
     <thead>
         <tr>
             <th>Title</th>
+            <th>ID</th>
             <th>Type</th>
             <th>Status</th>
             <th>Location</th>
@@ -86,6 +87,7 @@
         {% for report in reports %}
         <tr>
             <td>{{ report.title }}</td>
+            <td>{{ report.id }}</td>
             <td>{{ report.get_report_type_display }}</td>
             <td>{{ report.get_status_display }}</td>
             <td>{{ report.location_text }}</td>

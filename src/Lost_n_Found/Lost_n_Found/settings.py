@@ -15,7 +15,7 @@ import posixpath
 from .secrets import SECRET_KEY, DB_NAME, DB_USER, DB_PASSWORD, DB_HOST
 
 # Application version (semantic version, controlled in code)
-APP_VERSION = "0.3.17"
+APP_VERSION = "0.3.18"
 
 # Build identifier (default for local development)
 APP_BUILD = os.getenv("APP_BUILD", "dev")
@@ -143,6 +143,9 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+
+# Default login page
+LOGIN_URL = '/login/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/

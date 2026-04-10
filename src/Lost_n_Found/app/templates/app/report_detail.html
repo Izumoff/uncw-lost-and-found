@@ -1,3 +1,5 @@
+{# app/templates/app/report_detail.html #}
+
 {% extends "app/layout.html" %}
 
 {% block content %}
@@ -58,10 +60,19 @@
 
         {% if report.status == 'approved' and report.outcome == 'open' %}
         <hr />
-        <p>
-            <a href="{% url 'resolve_report' report.id %}" class="btn btn-success">Mark as Resolved</a>
-            <a href="{% url 'close_report' report.id %}" class="btn btn-default">Close Report</a>
-        </p>
+        <div style="display:flex; gap:10px;">
+
+            <form method="post" action="{% url 'resolve_report' report.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">Mark as Resolved</button>
+            </form>
+
+            <form method="post" action="{% url 'close_report' report.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-default">Close Report</button>
+            </form>
+
+        </div>
         {% endif %}
     </div>
 </div>
@@ -81,18 +92,18 @@
 {% endif %}
 
 
-
 {% if user.is_authenticated and report.user == user %}
     {% if report.report_type == 'lost' and report.outcome == 'open' %}
 <p>
-    <a href="{% url 'close_own_report' report.id %}" class="btn btn-danger">
-        Close My Report
-    </a>
+    <form method="post" action="{% url 'close_own_report' report.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">
+            Close My Report
+        </button>
+    </form>
 </p>
     {% endif %}
 {% endif %}
-
-
 
 
 <p>

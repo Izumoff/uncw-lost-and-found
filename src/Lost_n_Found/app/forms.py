@@ -104,3 +104,43 @@ class FoundItemReportForm(forms.ModelForm):
                 'placeholder': 'Location where the item was found'
             }),
         }
+
+    def clean_title(self):
+        """Validate and normalize the report title."""
+        title = self.cleaned_data["title"].strip()
+
+        if not title:
+            raise forms.ValidationError("Title is required.")
+
+        if len(title) < 3:
+            raise forms.ValidationError("Title must be at least 3 characters long.")
+
+        return title
+
+    def clean_description(self):
+        """Validate and normalize the report description."""
+        description = self.cleaned_data["description"].strip()
+
+        if not description:
+            raise forms.ValidationError("Description is required.")
+
+        if len(description) < 5:
+            raise forms.ValidationError(
+                "Description must be at least 5 characters long."
+            )
+
+        return description
+
+    def clean_location_text(self):
+        """Validate and normalize the report location."""
+        location_text = self.cleaned_data["location_text"].strip()
+
+        if not location_text:
+            raise forms.ValidationError("Location is required.")
+
+        if len(location_text) < 2:
+            raise forms.ValidationError(
+                "Location must be at least 2 characters long."
+            )
+
+        return location_text
