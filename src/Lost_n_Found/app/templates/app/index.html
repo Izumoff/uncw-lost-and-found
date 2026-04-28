@@ -10,10 +10,16 @@
                 Submit a lost item report, view reports, and support the campus lost and found process.
             </p>
             <p>
-                <a href="#" class="btn btn-primary btn-lg">Create Report</a>
-                <a href="#" class="btn btn-default btn-lg">View My Reports</a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'create_lost_report' %}" class="btn btn-primary btn-lg">Create Report</a>
+                <a href="{% url 'reports' %}?scope=mine" class="btn btn-default btn-lg">View My Reports</a>
+                {% else %}
+                <a href="{% url 'register' %}" class="btn btn-primary btn-lg">Register</a>
+                <a href="{% url 'login' %}" class="btn btn-default btn-lg">Log In</a>
+                {% endif %}
             </p>
         </div>
+
         <div class="col-md-5">
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -23,32 +29,32 @@
                     <div class="row text-center">
                         <div class="col-xs-6" style="margin-bottom:15px;">
                             <div style="border:1px solid #dddddd; padding:15px;">
-                                <div style="font-size:24px; font-weight:bold;">12</div>
+                                <div style="font-size:24px; font-weight:bold;">{{ open_reports_count }}</div>
                                 <div>Open Reports</div>
                             </div>
                         </div>
                         <div class="col-xs-6" style="margin-bottom:15px;">
                             <div style="border:1px solid #dddddd; padding:15px;">
-                                <div style="font-size:24px; font-weight:bold;">5</div>
+                                <div style="font-size:24px; font-weight:bold;">{{ under_review_count }}</div>
                                 <div>Under Review</div>
                             </div>
                         </div>
                         <div class="col-xs-6">
                             <div style="border:1px solid #dddddd; padding:15px;">
-                                <div style="font-size:24px; font-weight:bold;">8</div>
+                                <div style="font-size:24px; font-weight:bold;">{{ resolved_count }}</div>
                                 <div>Resolved</div>
                             </div>
                         </div>
                         <div class="col-xs-6">
                             <div style="border:1px solid #dddddd; padding:15px;">
-                                <div style="font-size:24px; font-weight:bold;">2</div>
+                                <div style="font-size:24px; font-weight:bold;">{{ rejected_count }}</div>
                                 <div>Rejected</div>
                             </div>
                         </div>
                     </div>
                     <hr />
                     <p class="text-muted" style="margin-bottom:0;">
-                        Campus community users can create reports and track their own submissions. Security staff will review and manage reports.
+                        Campus community users can create reports and track their own submissions. Security staff review and manage reports.
                     </p>
                 </div>
             </div>
@@ -64,10 +70,21 @@
             </div>
             <div class="panel-body">
                 <p>Create a report and track your own lost and found activity.</p>
+
+                {% if user.is_authenticated %}
+                <p><a href="{% url 'create_lost_report' %}" class="btn btn-primary btn-block">Create Lost Report</a></p>
+                <p><a href="{% url 'create_found_report' %}" class="btn btn-default btn-block">Create Found Report</a></p>
+                <p><a href="{% url 'reports' %}?scope=mine" class="btn btn-default btn-block">View My Reports</a></p>
+                <p><a href="{% url 'reports' %}" class="btn btn-default btn-block">View Published Reports</a></p>
+                    {% if user.is_superuser %}
+                        <hr />
+                        <p><a href="{% url 'admin_console' %}" class="btn btn-warning btn-block">Admin Console</a></p>
+                    {% endif %}
+                {% else %}
                 <p><a href="{% url 'login' %}" class="btn btn-primary btn-block">Log In</a></p>
-                <p><a href="#" class="btn btn-default btn-block">Create Report</a></p>
-                <p><a href="#" class="btn btn-default btn-block">View My Reports</a></p>
-                <p><a href="#" class="btn btn-default btn-block">View Report Status</a></p>
+                <p><a href="{% url 'register' %}" class="btn btn-default btn-block">Register</a></p>
+                <p><a href="{% url 'reports' %}" class="btn btn-default btn-block">View Published Reports</a></p>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -75,9 +92,10 @@
     <div class="col-md-8">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h2 class="panel-title">Example Reports</h2>
+                <h2 class="panel-title">Recent Published Reports</h2>
             </div>
             <div class="panel-body">
+                {% if recent_reports %}
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover">
                         <thead>
@@ -86,41 +104,44 @@
                                 <th>Item</th>
                                 <th>Location</th>
                                 <th>Status</th>
-                                <th>Updated</th>
+                                <th>Published</th>
                             </tr>
                         </thead>
                         <tbody>
+                            {% for report in recent_reports %}
                             <tr>
-                                <td>RPT-1001</td>
-                                <td>Black Wallet</td>
-                                <td>Library, 1st Floor</td>
-                                <td><span class="label label-warning">Under Review</span></td>
-                                <td>2026-02-21</td>
+                                <td>{{ report.id }}</td>
+                                <td>
+                                    <a href="{% url 'report_detail' report.id %}">
+                                        {{ report.title }}
+                                    </a>
+                                </td>
+                                <td>{{ report.location_text }}</td>
+                                <td>
+                                    {% if report.outcome == "resolved" %}
+                                    <span class="label label-success">Resolved</span>
+                                    {% elif report.status == "rejected" %}
+                                    <span class="label label-danger">Rejected</span>
+                                    {% elif report.status == "pending" %}
+                                    <span class="label label-warning">Under Review</span>
+                                    {% else %}
+                                    <span class="label label-default">Open</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ report.published_at|date:"Y-m-d" }}</td>
                             </tr>
-                            <tr>
-                                <td>RPT-1002</td>
-                                <td>Silver Keys</td>
-                                <td>Fisher Student Center</td>
-                                <td><span class="label label-success">Resolved</span></td>
-                                <td>2026-02-19</td>
-                            </tr>
-                            <tr>
-                                <td>RPT-1003</td>
-                                <td>Blue Water Bottle</td>
-                                <td>Kenan Hall</td>
-                                <td><span class="label label-default">Open</span></td>
-                                <td>2026-02-16</td>
-                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
-                <div class="alert alert-info" style="margin-bottom:0;">
-                    Public front page preview only. Full report workflows will be added in later stages.
-                </div>
+                {% else %}
+                <p class="text-muted" style="margin-bottom:0;">
+                    No published reports are available yet.
+                </p>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
-
 
 {% endblock %}

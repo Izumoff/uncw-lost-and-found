@@ -57,6 +57,7 @@ class Report(models.Model):
     )
     location_text = models.CharField(max_length=200, blank=True)
     is_published = models.BooleanField(default=False)
+    published_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

@@ -80,6 +80,7 @@
             <th>Status</th>
             <th>Location</th>
             <th>Created</th>
+            <th>Published</th>
             <th></th>
         </tr>
     </thead>
@@ -92,6 +93,7 @@
             <td>{{ report.get_status_display }}</td>
             <td>{{ report.location_text }}</td>
             <td>{{ report.created_at }}</td>
+            <td>{{ report.published_at }}</td>
             <td>
                 <a href="{% url 'report_detail' report.id %}">View</a>
             </td>

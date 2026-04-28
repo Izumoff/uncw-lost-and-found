@@ -3,6 +3,7 @@ app/views.py
 """
 
 from datetime import datetime
+from django.utils import timezone
 
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.decorators import login_required
@@ -24,14 +25,46 @@ from .models import Report
 
 
 def home(request):
-    """Renders the home page."""
+    """Renders the home page with summary statistics and recent reports."""
     assert isinstance(request, HttpRequest)
+
+    # Summary statistics
+    open_reports_count = Report.objects.filter(
+        outcome=Report.OUTCOME_OPEN
+    ).count()
+
+    under_review_count = Report.objects.filter(
+        status=Report.STATUS_PENDING
+    ).count()
+
+    resolved_count = Report.objects.filter(
+        outcome=Report.OUTCOME_RESOLVED
+    ).count()
+
+    rejected_count = Report.objects.filter(
+        status=Report.STATUS_REJECTED
+    ).count()
+
+    # Recent published reports (safe for public view)
+    recent_reports = Report.objects.filter(
+        is_published=True
+    ).order_by('-created_at')[:3]
+
     return render(
         request,
         'app/index.html',
         {
             'title': 'Home Page',
             'year': datetime.now().year,
+
+            # Summary
+            'open_reports_count': open_reports_count,
+            'under_review_count': under_review_count,
+            'resolved_count': resolved_count,
+            'rejected_count': rejected_count,
+
+            # Recent reports
+            'recent_reports': recent_reports,
         }
     )
 
@@ -527,7 +560,16 @@ def change_report_status(request, report_id):
         report.outcome == Report.OUTCOME_OPEN
     ):
         report.status = new_status
-        report.is_published = (new_status == Report.STATUS_APPROVED)
+
+
+        if new_status == Report.STATUS_APPROVED:
+            report.is_published = True
+            report.published_at = timezone.now()
+        else:
+            report.is_published = False
+            report.published_at = None
+
+
         logger.info(
             f"User {request.user.id} changed status of report {report.id} to {new_status}"
         )
